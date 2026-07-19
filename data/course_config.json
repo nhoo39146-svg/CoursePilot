@@ -1,0 +1,22 @@
+{
+    "高等数学(上)": {
+        "credit": 5,
+        "difficulty": 5
+    },
+    "程序设计基础(Python)A": {
+        "credit": 3,
+        "difficulty": 4
+    },
+    "大学体育(1)": {
+        "credit": 1,
+        "difficulty":3
+    },
+    "中国近现代史纲要": {
+        "credit": 3,
+        "difficulty": 3
+    },
+    "基础英语A": {
+        "credit": 4,
+        "difficulty": 3
+    }
+}
