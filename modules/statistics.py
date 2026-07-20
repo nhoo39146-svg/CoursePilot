@@ -1,8 +1,7 @@
 import json
 from datetime import datetime, timedelta
 
-# 统一读取data文件夹下的配置与课程数据
-COURSE_JSON_PATH = "data/course.json"
+COURSE_JSON_PATH = "data/courses.json"
 CONFIG_JSON_PATH = "data/config.json"
 
 def load_config():
@@ -20,12 +19,16 @@ def is_weekend(date: datetime) -> bool:
     return date.weekday() >= 5
 
 def date_str_to_datetime(date_str: str) -> datetime:
-    """字符串日期 yyyy-MM-dd 转日期对象"""
+    """把字符串日期 yyyy-MM-dd 转成日期对象"""
     return datetime.strptime(date_str, "%Y-%m-%d")
 
 def calc_course_class_times(course: dict, start_date: datetime, end_date: datetime, now_date: datetime):
-    """单门课计算：已上课时、剩余次数、剩余总课时"""
-    course_weeks = set(course["weeks"])
+    """计算单门课：已上次数、剩余次数、剩余课时"""
+    course_id = course.get("course_id", 0)
+    course_name = course.get("course_name", "未知课程")
+    course_weeks = set(course.get("weeks", []))
+    single_hour = course.get("single_hour", 4)
+
     total_class_times = len(course_weeks)
 
     past_times = 0
@@ -37,17 +40,17 @@ def calc_course_class_times(course: dict, start_date: datetime, end_date: dateti
             past_times += 1
 
     remain_times = total_class_times - past_times
-    remain_hour = remain_times * course["single_hour"]
+    remain_hour = remain_times * single_hour
     return {
-        "course_id": course["course_id"],
-        "course_name": course["course_name"],
+        "course_id": course_id,
+        "course_name": course_name,
         "finished_times": past_times,
         "remain_times": remain_times,
         "remain_class_hour": remain_hour
     }
 
 def get_semester_total_stat(start_date: datetime, end_date: datetime, now_date: datetime):
-    """学期整体统计：总天数、已过天数、剩余天数、剩余周末"""
+    """全局学期统计：总天数、已过天数、剩余天数、剩余周末"""
     total_days = (end_date - start_date).days + 1
     past_days = (now_date - start_date).days + 1
     if past_days < 0:
@@ -98,7 +101,6 @@ def get_all_semester_stat(current_date_str: str):
 
 # 本地测试代码
 if __name__ == "__main__":
-    import json
     test_date = "2026-07-20"
     output = get_all_semester_stat(test_date)
     print(json.dumps(output, ensure_ascii=False, indent=2))
